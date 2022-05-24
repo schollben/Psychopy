@@ -20,10 +20,10 @@ stimDur = 2
 isi = 1
 
 #grating parameters
-temporalFreq = 8
-spatialFreq = 0.08
+temporalFreq = 4
+spatialFreq = 0.1
 textureType = 'sqr' #options: 'sqr' = square wave, 'sin' = sinusoidal
-stimSize = 100 #deg
+stimSize = 80 #deg
 
 ######initialize#####
 #USB serial device to time stimulus onset
@@ -34,8 +34,8 @@ ser.setDTR(False)
 
 mon = monitors.Monitor('ACER')
 myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
-thisGamma = 1.6 #human calibrated with gammaMotionNull - only works in duplication display mode?
-myWin.gamma = [thisGamma, thisGamma, thisGamma]
+#thisGamma = 1.6 #human calibrated with gammaMotionNull - only works in duplication display mode?
+#myWin.gamma = [thisGamma, thisGamma, thisGamma]
 
 #logging
 dataPath='D:\\Pyschopy\\'

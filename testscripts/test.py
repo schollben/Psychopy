@@ -10,7 +10,7 @@ frame_rate = mywin.getActualFrameRate(nIdentical=60, nMaxFrames=100,nWarmUpFrame
 print(frame_rate)
 
 #create some stimuli
-grating = visual.GratingStim(win=mywin, mask='circle', size=40, pos=[-4,0], sf=0.2)
+grating = visual.GratingStim(win=mywin, mask='circle', size=40, pos=[0,0], sf=0.2)
 fixation = visual.GratingStim(win=mywin, size=0.2, pos=[0,0], sf=0, rgb=-1)
 
 #draw the stimuli and update the window

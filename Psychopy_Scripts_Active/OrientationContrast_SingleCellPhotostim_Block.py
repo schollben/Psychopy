@@ -18,7 +18,7 @@ contrasts  = [16,64]
 numContrasts = len(contrasts)
 isRandom = 1
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
-stimDur = 0.5
+stimDur = 1.0
 isi = 0.5
 
 #grating parameters
@@ -94,6 +94,13 @@ for trial in range(0,numTrials):
     for ncell in range(0,numCells):
         
         for stimNumber in stimOrder:
+            
+            #start block - current length is 1.5 sec (~45 frames)
+            ser.setRTS(True) #start acquisition trigger
+            myWin.flip()
+            ser.setRTS(False) #start acquisition trigger
+
+            
             if isi !=0:
                 gratingStim.setContrast(0)
                 clock.reset()
@@ -109,7 +116,7 @@ for trial in range(0,numTrials):
                 print("\tStim",stimNumber+1,orientations[stimNumber],' deg ',contrasts[stimNumber],' %')  #display stim
             
             ser.setRTS(True) #stimulus trigger ON
-            for frmn in range(0, 59): #frame rate = 60 Hz
+            for frmn in range(0, (60 - 1) * stimDur ): #frame rate = 60 Hz
                 gratingStim.setPhase(0.05, '+')
                 myWin.flip()
                 if frmn == 6:
