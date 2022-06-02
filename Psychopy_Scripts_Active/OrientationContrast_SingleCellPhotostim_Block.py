@@ -35,7 +35,7 @@ ser.setRTS(False)
 ser.setDTR(False)
 
 mon = monitors.Monitor('ACER')
-myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
+myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 0)
 thisGamma = 1.6 #human calibrated with gammaMotionNull - only works in duplication display mode?
 myWin.gamma = [thisGamma, thisGamma, thisGamma]
 

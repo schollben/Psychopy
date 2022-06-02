@@ -37,6 +37,9 @@ if isUserControlled:
                 gratingStim.setAutoDraw(True)
         stim.draw()
         myWin.flip()
+
+        if event.getKeys(keyList = ['escape'], modifiers=False, timeStamped=False):
+            break
         
 else:
     while True:

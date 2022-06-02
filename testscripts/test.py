@@ -21,7 +21,7 @@ while True: #this creates a never-ending loop
     fixation.draw()
     mywin.flip()
     
-    if len(event.getKeys())>0:
+    if event.getKeys(keyList = ['escape'], modifiers=False, timeStamped=False):
         break
     event.clearEvents()
 
