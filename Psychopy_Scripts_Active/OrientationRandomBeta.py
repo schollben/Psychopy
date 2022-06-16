@@ -7,6 +7,9 @@ import os
 import serial
 from pathlib import Path
 import randomgenerator.randomgenerator as gener
+import logFunction
+from logFunction import logFileNameGenerator
+
 
 ######setup#####
 isRandom = True
@@ -15,6 +18,7 @@ doBlank = False #False for no blank stim, 1 to have a blank stim. The blank will
 stimDur = 2
 isi = 1
 setPhase = True #If not setting randomly selected phase, set it False
+logPrefix = 'randomOrientation' #set the prefix of log file
 
 #grating parameters
 temporalFreq = 8
@@ -33,6 +37,7 @@ mon = monitors.Monitor('ACER')
 myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
 
 #logging
+'''
 dataPath='D:\\Pyschopy\\'
 date = (time.strftime("%Y-%m-%d"))
 directory = dataPath+date
@@ -46,7 +51,11 @@ while os.path.exists(logFilePath+FileName):
     FileName = f"{i:03}"+'.txt'
 print(logFilePath+FileName) #new file name and location
 stimarray = numpy.empty((0,6), int) #[stimulus number, orientation, contrast]
-numpy.savetxt(logFilePath+FileName,stimarray)
+numpy.savetxt(logFilePath+FileName,stimarray)'''
+stimarray = numpy.empty((0,6), int) #[stimulus number, orientation, contrast]
+fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
+print(fileAddress)
+print(fileName)
 
 #create grating stims
 gratingStim = visual.GratingStim(win=myWin, mask='gauss', tex=textureType ,units='deg',
@@ -112,9 +121,8 @@ for trial in range(0,numTrials):
         
         #logging
         stimarray = numpy.append( stimarray, numpy.array([[stimNumber, numpy.rad2deg(ornt), cont, freq, size, phase]]), axis=0)
-        numpy.savetxt(logFilePath+FileName,stimarray,fmt= ["%4d","%1.3f", "%1.3f", "%1.3f", "%1.3f", "%1.3f"]) #updating and overwting file
+        numpy.savetxt(fileAddress+fileName,stimarray,fmt= ["%4d","%1.3f", "%1.3f", "%1.3f", "%1.3f", "%1.3f"])
         
-        isi = 1
         #now do ISI
         if isi !=0:
             gratingStim.setContrast(0)
