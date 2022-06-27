@@ -19,7 +19,7 @@ numTrials= 1 #Run all the stims this many times
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
 stimDur = 2
 isi = 1
-logPrefix = 'OrientationContrast'
+logPrefix = 'OrientationRandomDraw'
 
 #grating parameters
 temporalFreq = 8
@@ -29,10 +29,10 @@ stimSize = 10 #deg
 
 ######initialize#####
 #USB serial device to time stimulus onset
-deviceName = "COM3"
-ser = serial.Serial(deviceName, 38400, timeout=1) #RTS: stimulus onset trigger     DTS: other
-ser.setRTS(False)
-ser.setDTR(False)
+#deviceName = "COM3"
+#ser = serial.Serial(deviceName, 38400, timeout=1) #RTS: stimulus onset trigger     DTS: other
+#ser.setRTS(False)
+#ser.setDTR(False)
 
 mon = monitors.Monitor('testMonitor')
 myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
@@ -96,11 +96,11 @@ for trial in range(0,numTrials):
             print("\tStim",stimNumber+1,orientations[stimNumber],' deg ',contrasts[stimNumber],' %')  #display stim
         
         clock.reset
-        ser.setRTS(True) #stimulus trigger ON
+#        ser.setRTS(True) #stimulus trigger ON
         while clock.getTime() < stimDur:
             gratingStim.setPhase(0 + clock.getTime()*temporalFreq)
             myWin.flip()
-        ser.setRTS(False) #stimulus trigger OFF
+#        ser.setRTS(False) #stimulus trigger OFF
         
         #logging
         stimarray = numpy.append( stimarray, numpy.array([[stimNumber, orientations[stimNumber], contrasts[stimNumber]]]), axis=0)
@@ -114,7 +114,7 @@ for trial in range(0,numTrials):
                 myWin.flip()
 
 #logging the whole script
-logScript(logPrefix, 'OrientationContrast.py', fileAddress, fileName)
+logScript(logPrefix, 'OrientationRadomDraw.py', fileAddress, fileName)
 
 
 
