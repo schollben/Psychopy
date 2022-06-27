@@ -1,13 +1,13 @@
 from psychopy import visual, logging, core, event, monitors
 from psychopy.visual import filters
-import pylab, math, random, numpy, time, imp
+import pylab, math, random, numpy, time, imp, io
 import numpy.matlib
 import sys
 import os
 import serial
 from pathlib import Path
 import logFunction
-from logFunction import logFileNameGenerator
+from logFunction import logFileNameGenerator, logScript
 
 ######setup#####
 mon = monitors.Monitor('ACER')
@@ -18,17 +18,18 @@ logPrefix = 'randomGrid' #set the prefix of log file
 # Stimulus properties
 width  = 1920 #currently following the monitor size of ACER
 height = 1080
-grid = 120 # set the width of each grid(ideal if set it as a  common divisor of both width and height)
+grid = 240 # set the width of each grid(ideal if set it as a  common divisor of both width and height)
 subGridNum = 12 #number of subGrid on one side when flickering
-num = 1 #number of stimulus
-delay = 1 #delay time in seconds when flickering 
+num = 4 #number of stimulus
+delay = 0.05 #delay time in seconds when flickering, cannot be smaller than 0.014 sec)
 duration = 3 #duration time in seconds on monitor
-#x goes along the height of the grid and y goes along the width of the grid
 
 ######initialize#####
 subGrid = int(grid / subGridNum)
 noise_matrix = 0 * numpy.ones((height, width))
 flickTime = delay * monRefreshRate # delay time flickTime * 1/Refresh rate(HZ) of monitor
+#(0,0) is the bottom left corner of the monitor
+#x goes along the height of the grid and y goes along the width of the grid
 
 #Functions
 #color the subgrid in black and white    
@@ -79,7 +80,7 @@ def colorSubgrid(x, y, grid, subGridNum, mat):
                             for b in range(int(y + (j-1)*sg), int(y+ j * sg)):
                                 mat[a,b] = -1
 
-#Randomly set the location of bottor right corner of the grid
+#Randomly set the location of bottom left corner of the grid
 def setXY(width, height, grid, matrix):
     x = -1
     y = -1
@@ -102,12 +103,13 @@ for n in range(0, num):
     print('Grid '+ str(n) + ' : ' + str(stiX)+ ' high and ' + str(stiY) +  
     ' right from the bottom right corner')
     colorSubgrid(stiX, stiY, grid, subGridNum, noise_matrix)
-    print('subgrid size : ' + str(subGrid) + ' , grid size : ' + str(grid))
     noise_matrix = noise_matrix.reshape((height, width))
     
     # Use numpy array as ImageStim
     noiseStim = visual.ImageStim(myWin, image = noise_matrix, size = (width, height))
-    
+
+print('subgrid size : ' + str(subGrid) + ' , grid size : ' + str(grid))
+
 #Flickering
 noiseStim.setAutoDraw(True)
 
@@ -131,7 +133,7 @@ while clock.getTime() < duration:
 '''
 stimarray = noise_matrix
 fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
-print(fileAddress)
-print(fileName)
-numpy.savetxt(fileAddress+fileName,stimarray,fmt="%1.1f")'''
-    
+print(fileAddress + fileName)
+numpy.savetxt(fileAddress+fileName,stimarray,fmt="%1.1f")
+logScript(logPrefix, 'gridStimulus.py', fileAddress, fileName)
+'''

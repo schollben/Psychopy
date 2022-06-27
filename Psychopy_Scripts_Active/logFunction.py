@@ -16,7 +16,7 @@ def logFileNameGenerator(stem):
         os.mkdir(directory)
     logFilePath =dataPath+date+'\\'
     #+'\\'+Path(__file__).stem #filepath
-    i = 0
+    i = 1
     FileName = str(stem)+ f"{i:03}"+'.txt'
     #os.chdir(str(logFilePath))
     while os.path.exists(logFilePath+FileName):
@@ -25,5 +25,20 @@ def logFileNameGenerator(stem):
     #print(logFilePath+FileName) #new file name and location
     #numpy.savetxt(logFilePath+FileName,data)
     return logFilePath, FileName
+    
+def logScript(stem, fileName, path, name):
+    os.chdir(str(path))
+    f = open(str(name + "_script.txt"), 'x')
+    f = open(str(name + "_script.txt"), 'w')
+    pa = 'C:\\Users\\scholab\\Documents\\psychopy\\Psychopy_Scripts_Active'
+    os.chdir('C:\\Users\\scholab\\Documents\\pyschopy\\Psychopy_Scripts_Active')
+    rfi = open(str(fileName), 'r')
+    while True:
+        l = rfi.readline()
+        f.writelines(l + '\n')
+        if not l :
+            break
+    rfi.close()
+    f.close()
     
 
