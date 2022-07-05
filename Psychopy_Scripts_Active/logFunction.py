@@ -30,8 +30,7 @@ def logScript(stem, fileName, path, name):
     os.chdir(str(path))
     f = open(str(name + "_script.txt"), 'x')
     f = open(str(name + "_script.txt"), 'w')
-    pa = 'C:\\Users\\scholab\\Documents\\psychopy\\Psychopy_Scripts_Active'
-    os.chdir('C:\\Users\\scholab\\Documents\\pyschopy\\Psychopy_Scripts_Active')
+    os.chdir('C:\\Users\\scholab\\Documents\\Psychopy\\Psychopy_Scripts_Active')
     rfi = open(str(fileName), 'r')
     while True:
         l = rfi.readline()
