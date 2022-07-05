@@ -8,7 +8,7 @@ import serial
 from pathlib import Path
 import randomgenerator.randomgenerator as gener
 import logFunction
-from logFunction import logFileNameGenerator
+from logFunction import logFileNameGenerator, logScript
 
 
 ######setup#####
@@ -18,7 +18,7 @@ doBlank = False #False for no blank stim, 1 to have a blank stim. The blank will
 stimDur = 2
 isi = 1
 setPhase = True #If not setting randomly selected phase, set it False
-logPrefix = 'randomOrientation' #set the prefix of log file
+logPrefix = 'randomOrientationBeta' #set the prefix of log file
 
 #grating parameters
 temporalFreq = 8
@@ -28,34 +28,21 @@ stimSize = 10 #deg
 
 ######initialize#####
 #USB serial device to time stimulus onset
+'''
 deviceName = "COM3"
 ser = serial.Serial(deviceName, 38400, timeout=1) #RTS: stimulus onset trigger     DTS: other
 ser.setRTS(False)
 ser.setDTR(False)
+'''
 
 mon = monitors.Monitor('ACER')
 myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
 
 #logging
-'''
-dataPath='D:\\Pyschopy\\'
-date = (time.strftime("%Y-%m-%d"))
-directory = dataPath+date
-if not os.path.exists(directory):
-    os.mkdir(directory)
-logFilePath =dataPath+date+'\\'+Path(__file__).stem #filepath
-i = 0
-FileName = f"{i:03}"+'.txt'
-while os.path.exists(logFilePath+FileName):
-    i = i+1
-    FileName = f"{i:03}"+'.txt'
-print(logFilePath+FileName) #new file name and location
-stimarray = numpy.empty((0,6), int) #[stimulus number, orientation, contrast]
-numpy.savetxt(logFilePath+FileName,stimarray)'''
 stimarray = numpy.empty((0,6), int) #[stimulus number, orientation, contrast]
 fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
-print(fileAddress)
-print(fileName)
+numpy.savetxt(fileAddress+fileName,stimarray)
+print(fileAddress + fileName)
 
 #create grating stims
 gratingStim = visual.GratingStim(win=myWin, mask='gauss', tex=textureType ,units='deg',
@@ -113,11 +100,11 @@ for trial in range(0,numTrials):
             ' sf ',freq,  ' size ',size,  ' phase ',phase)  #display stim
         
         clock.reset
-        ser.setRTS(True) #stimulus trigger ON
+        #ser.setRTS(True) #stimulus trigger ON
         while clock.getTime() < stimDur:
             gratingStim.setPhase(0 + clock.getTime()*temporalFreq)
             myWin.flip()
-        ser.setRTS(False) #stimulus trigger OFF
+        #ser.setRTS(False) #stimulus trigger OFF
         
         #logging
         stimarray = numpy.append( stimarray, numpy.array([[stimNumber, numpy.rad2deg(ornt), cont, freq, size, phase]]), axis=0)
@@ -129,6 +116,9 @@ for trial in range(0,numTrials):
             clock.reset()
             while clock.getTime() < isi:
                 myWin.flip()
+
+#logging the whole script
+logScript(logPrefix, 'OrientationRandomBeta.py', fileAddress, fileName)
 
 
 

@@ -7,7 +7,7 @@ import os
 import serial
 from pathlib import Path
 import logFunction
-from logFunction import logFileNameGenerator
+from logFunction import logFileNameGenerator, logScript
 
 ######setup#####
 mon = monitors.Monitor('ACER')
@@ -18,7 +18,7 @@ logPrefix = 'randomNoise' #set the prefix of log file
 # Stimulus properties
 width  = 1920 #currently following the monitor size of ACER
 height = 1080
-grid = 10 # set the width of each grid(ideal if set it as a  common divisor of both width and height)
+grid = 120 # set the width of each grid(ideal if set it as a  common divisor of both width and height)
 num = 4 #number of sequence of stimulus
 color = 'hotpink'
 flickTime = 1 #cannot be smaller than 0.014 sec)
@@ -31,6 +31,7 @@ stimarray = numpy.empty((0,2), int)
 #x goes along with the width and y goes along with the height
 
 #Functions            
+#randomly set the location of the center of the grid
 def setXY(width, height, grid, matrix):
     x = -1
     y = -1
@@ -79,3 +80,4 @@ for n in range(0, num):
 fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
 print(fileAddress + fileName)
 numpy.savetxt(fileAddress+fileName,stimarray,fmt="%1.1f")
+logScript(logPrefix, 'noiseStimulus.py', fileAddress, fileName)
