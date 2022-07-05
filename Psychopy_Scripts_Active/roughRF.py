@@ -4,7 +4,7 @@ import csv, pylab, math, random, numpy, time, imp, sys
 info={'stimType' :1}
 
 #----------- Window Config -----------#
-myWin = visual.Window(monitor='Acer', 
+myWin = visual.Window(monitor='ACER', 
     size=(1920,1080),
     fullscr=True,
     allowGUI = False,

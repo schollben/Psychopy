@@ -13,7 +13,6 @@ from logFunction import logFileNameGenerator, logScript
 mon = monitors.Monitor('ACER')
 myWin = visual.Window([1920,1080], monitor=mon, units="pix", screen = 1, color = [0,0,0])
 myMouse = event.Mouse(win=myWin)
-logPrefix = 'randomNoise' #set the prefix of log file
 
 # Stimulus properties
 width  = 1920 #currently following the monitor size of ACER
@@ -29,6 +28,13 @@ isWhite = True
 stimarray = numpy.empty((0,2), int)
 #(0,0) is the center of the monitor
 #x goes along with the width and y goes along with the height
+
+####log#####
+fileAddress, fileName = logFunction.logFileNameGenerator(stimarray)
+print(fileAddress + fileName)
+
+#logging the whole script
+logScript(os.getcwd(),os.path.basename(__file__), fileAddress, fileName)
 
 #Functions            
 #randomly set the location of the center of the grid
@@ -60,6 +66,10 @@ for n in range(0, num):
     stiX, stiY = setXY(width, height, grid, noise_matrix)
     print('Grid '+ str(n) + ' : ( ' + str(stiX)+ ' , ' + str(stiY) +  ' )')
     stimarray = numpy.append( stimarray, numpy.array([[stiX, stiY]]), axis=0)
+    
+    ###logging####
+    numpy.savetxt(fileAddress+fileName,stimarray,fmt="%1.1f")
+    
     noiseStim = visual.rect.Rect(win=myWin, size = (grid, grid))
     noiseStim.setAutoDraw(True)
     
@@ -76,8 +86,3 @@ for n in range(0, num):
     isWhite = not isWhite
     noiseStim.color = [0,0,0]
     
-###logging####
-fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
-print(fileAddress + fileName)
-numpy.savetxt(fileAddress+fileName,stimarray,fmt="%1.1f")
-logScript(logPrefix, 'noiseStimulus.py', fileAddress, fileName)

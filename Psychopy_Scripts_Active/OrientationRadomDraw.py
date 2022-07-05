@@ -19,7 +19,6 @@ numTrials= 1 #Run all the stims this many times
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
 stimDur = 2
 isi = 1
-logPrefix = 'OrientationRandomDraw'
 
 #grating parameters
 temporalFreq = 8
@@ -41,9 +40,11 @@ myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
 
 #logging
 stimarray = numpy.empty((0,3), int) #[stimulus number, orientation, contrast]
-fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
+fileAddress, fileName = logFunction.logFileNameGenerator(stimarray)
 print(fileAddress + fileName)
-numpy.savetxt(fileAddress+fileName,stimarray)
+
+#logging the whole script
+logScript(os.getcwd(),os.path.basename(__file__), fileAddress, fileName)
 
 #create grating stims
 gratingStim = visual.GratingStim(win=myWin, mask='gauss', tex=textureType ,units='deg',
@@ -112,9 +113,4 @@ for trial in range(0,numTrials):
             clock.reset()
             while clock.getTime() < isi:
                 myWin.flip()
-
-#logging the whole script
-logScript(logPrefix, 'OrientationRadomDraw.py', fileAddress, fileName)
-
-
-
+                

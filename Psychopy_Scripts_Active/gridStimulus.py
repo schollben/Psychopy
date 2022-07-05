@@ -13,7 +13,6 @@ from logFunction import logFileNameGenerator, logScript
 mon = monitors.Monitor('ACER')
 myWin = visual.Window([1920,1080], monitor=mon, units="pix", screen = 1, color = [0,0,0])
 monRefreshRate = 75 #refersh rate of mon in Hz
-logPrefix = 'randomGrid' #set the prefix of log file
 
 # Stimulus properties
 width  = 1920 #currently following the monitor size of ACER
@@ -30,6 +29,14 @@ noise_matrix = 0 * numpy.ones((height, width))
 flickTime = delay * monRefreshRate # delay time flickTime * 1/Refresh rate(HZ) of monitor
 #(0,0) is the bottom left corner of the monitor
 #x goes along the height of the grid and y goes along the width of the grid
+
+####log#####
+stimarray = noise_matrix
+fileAddress, fileName = logFunction.logFileNameGenerator(stimarray)
+print(fileAddress + fileName)
+
+#logging the whole script
+logScript(os.getcwd(),os.path.basename(__file__), fileAddress, fileName)
 
 #Functions
 #color the subgrid in black and white    
@@ -128,12 +135,5 @@ while clock.getTime() < duration:
         if clock.getTime() >= duration:
             break
 
-
-####log#####
-'''
-stimarray = noise_matrix
-fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
-print(fileAddress + fileName)
-numpy.savetxt(fileAddress+fileName,stimarray,fmt="%1.1f")
-logScript(logPrefix, 'gridStimulus.py', fileAddress, fileName)
-'''
+#logging
+numpy.savetxt(fileAddress+fileName,stimarray,fmt="%2d") #updating and overwting file

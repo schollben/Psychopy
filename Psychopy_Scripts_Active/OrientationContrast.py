@@ -10,16 +10,15 @@ import logFunction
 from logFunction import logFileNameGenerator, logScript
     
 ######setup#####
-numOrientations = 8
+numOrientations = 2
 orientations = numpy.arange(0,360,360.0/numOrientations)
 contrasts  = [8,64] #[4,8,16,32,64]
 numContrasts = len(contrasts)
 isRandom = 1
-numTrials= 2 #Run all the stims this many times
+numTrials= 1 #Run all the stims this many times
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
 stimDur = 2
 isi = 1
-logPrefix = 'T' #####
 
 #grating parameters
 temporalFreq = 8
@@ -35,16 +34,21 @@ ser.setRTS(False)
 ser.setDTR(False)
 
 mon = monitors.Monitor('testMonitor')
+thisGamma = 1.6
 myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
+mon.setGamma(thisGamma)
+
 #myWin.gamma = 1.6 #human calibrated with gammaMotionNull - only works in duplication display mode?????
+#myWin.gamma = [thisGamma, thisGamma, thisGamma]
+
 
 #logging
 stimarray = numpy.empty((0,3), int) #[stimulus number, orientation, contrast]
-fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
+fileAddress, fileName = logFunction.logFileNameGenerator(stimarray)
 print(fileAddress + fileName)
-numpy.savetxt(fileAddress+fileName,stimarray)
 
-###print(os.path.basename(__file__))   GET FILE NAME
+#logging the whole script
+logScript(os.getcwd(),os.path.basename(__file__), fileAddress, fileName)
 
 #create grating stims
 gratingStim = visual.GratingStim(win=myWin, mask='gauss', tex=textureType ,units='deg',
@@ -114,8 +118,5 @@ for trial in range(0,numTrials):
             clock.reset()
             while clock.getTime() < isi:
                 myWin.flip()
-                
-#logging the whole script
-logScript(logPrefix, 'OrientationContrast.py', fileAddress, fileName)
 
 

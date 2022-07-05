@@ -8,29 +8,26 @@ import serial
 from pathlib import Path
 
 #logging
-def logFileNameGenerator(stem):
+def logFileNameGenerator(stimarray):
     dataPath='D:\\Pyschopy\\'
     date = (time.strftime("%Y-%m-%d"))
     directory = dataPath+date
     if not os.path.exists(directory):
         os.mkdir(directory)
     logFilePath =dataPath+date+'\\'
-    #+'\\'+Path(__file__).stem #filepath
     i = 1
-    FileName = str(stem)+ f"{i:03}"+'.txt'
-    #os.chdir(str(logFilePath))
+    FileName = "T"+ f"{i:03}"+'.txt'
     while os.path.exists(logFilePath+FileName):
         i = i+1
-        FileName = str(stem) + f"{i:03}"+'.txt'
-    #print(logFilePath+FileName) #new file name and location
-    #numpy.savetxt(logFilePath+FileName,data)
+        FileName = "T" + f"{i:03}"+'.txt'
+    numpy.savetxt(logFilePath+FileName,stimarray)
     return logFilePath, FileName
     
-def logScript(stem, fileName, path, name):
+def logScript(currentAddress,fileName, path, name):
     os.chdir(str(path))
     f = open(str(name + "_script.txt"), 'x')
     f = open(str(name + "_script.txt"), 'w')
-    os.chdir('C:\\Users\\scholab\\Documents\\Psychopy\\Psychopy_Scripts_Active')
+    os.chdir(str(currentAddress))
     rfi = open(str(fileName), 'r')
     while True:
         l = rfi.readline()
