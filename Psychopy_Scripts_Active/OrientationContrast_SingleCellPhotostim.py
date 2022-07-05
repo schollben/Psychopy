@@ -22,7 +22,6 @@ isRandom = 1
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
 stimDur = 0.5
 isi = 0.5
-logPrefix = 'OrientationContrast_SingleCellPhotostim'
 
 #grating parameters
 temporalFreq = 8
@@ -44,9 +43,11 @@ myWin.gamma = [thisGamma, thisGamma, thisGamma]
 
 #logging
 stimarray = numpy.empty((0,5), int) 
-fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
+fileAddress, fileName = logFunction.logFileNameGenerator(stimarray)
 print(fileAddress + fileName)
-numpy.savetxt(fileAddress+fileName,stimarray)
+
+#logging the whole script
+logScript(os.getcwd(),os.path.basename(__file__), fileAddress, fileName)
 
 #create grating stims
 gratingStim = visual.GratingStim(win=myWin, mask='circle', tex=textureType ,units='deg',
@@ -116,9 +117,6 @@ for trial in range(0,numTrials):
             stimarray = numpy.append( stimarray, temparray, axis=0)
             numpy.savetxt(fileAddress+fileName,stimarray,fmt="%4d") #updating and overwting file
         
-
-#logging the whole script
-logScript(logPrefix, 'OrientationContrast_SingleCellPhotostim.py', fileAddress, fileName)
 
 
 

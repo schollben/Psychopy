@@ -18,7 +18,6 @@ doBlank = False #False for no blank stim, 1 to have a blank stim. The blank will
 stimDur = 2
 isi = 1
 setPhase = True #If not setting randomly selected phase, set it False
-logPrefix = 'randomOrientationBeta' #set the prefix of log file
 
 #grating parameters
 temporalFreq = 8
@@ -40,9 +39,11 @@ myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
 
 #logging
 stimarray = numpy.empty((0,6), int) #[stimulus number, orientation, contrast]
-fileAddress, fileName = logFunction.logFileNameGenerator(logPrefix)
-numpy.savetxt(fileAddress+fileName,stimarray)
+fileAddress, fileName = logFunction.logFileNameGenerator(stimarray)
 print(fileAddress + fileName)
+
+#logging the whole script
+logScript(os.getcwd(),os.path.basename(__file__), fileAddress, fileName)
 
 #create grating stims
 gratingStim = visual.GratingStim(win=myWin, mask='gauss', tex=textureType ,units='deg',
@@ -116,11 +117,3 @@ for trial in range(0,numTrials):
             clock.reset()
             while clock.getTime() < isi:
                 myWin.flip()
-
-#logging the whole script
-logScript(logPrefix, 'OrientationRandomBeta.py', fileAddress, fileName)
-
-
-
-
-
