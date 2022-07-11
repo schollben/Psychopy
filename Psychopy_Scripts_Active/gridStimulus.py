@@ -20,8 +20,9 @@ height = 1080
 grid = 240 # set the width of each grid(ideal if set it as a  common divisor of both width and height)
 subGridNum = 12 #number of subGrid on one side when flickering
 num = 4 #number of stimulus
-delay = 0.05 #delay time in seconds when flickering, cannot be smaller than 0.014 sec)
+delay = 1 #delay time in seconds when flickering, cannot be smaller than 0.014 sec)
 duration = 3 #duration time in seconds on monitor
+isSpike = True #wheter the TTL will be displayed in vertical spike or not
 
 ######initialize#####
 subGrid = int(grid / subGridNum)
@@ -29,6 +30,12 @@ noise_matrix = 0 * numpy.ones((height, width))
 flickTime = delay * monRefreshRate # delay time flickTime * 1/Refresh rate(HZ) of monitor
 #(0,0) is the bottom left corner of the monitor
 #x goes along the height of the grid and y goes along the width of the grid
+
+#USB serial device to time stimulus onset - NOTE this also acts as a TRIGGER for acquistion 
+deviceName = "COM3"
+ser = serial.Serial(deviceName, 38400, timeout=1) #RTS: stimulus onset trigger     DTS: other
+ser.setRTS(False)
+ser.setDTR(False)
 
 ####log#####
 stimarray = noise_matrix
@@ -114,6 +121,11 @@ for n in range(0, num):
     
     # Use numpy array as ImageStim
     noiseStim = visual.ImageStim(myWin, image = noise_matrix, size = (width, height))
+    if isSpike:
+        ser.setRTS(True) #stimulus trigger ON
+        ser.setRTS(False) #stimulus trigger OFF
+    else :
+        ser.setRTS(True) #stimulus trigger ON
 
 print('subgrid size : ' + str(subGrid) + ' , grid size : ' + str(grid))
 
@@ -122,6 +134,7 @@ noiseStim.setAutoDraw(True)
 
 clock = core.Clock();
 clock.reset()
+
 
 while clock.getTime() < duration:
     noiseStim.contrast = 1
@@ -134,6 +147,8 @@ while clock.getTime() < duration:
         myWin.flip()
         if clock.getTime() >= duration:
             break
+
+ser.setRTS(False) #stimulus trigger OFF
 
 #logging
 numpy.savetxt(fileAddress+fileName,stimarray,fmt="%2d") #updating and overwting file
