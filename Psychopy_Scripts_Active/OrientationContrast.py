@@ -92,8 +92,10 @@ for trial in range(0,numTrials):
     print("Beginning Trial",trial+1)
     
     for stimNumber in stimOrder:
+        print(stimNumber)
 
         if stimNumber == len(orientations):
+            print("blank")
             gratingStim.setContrast(0)
             print("\tStim",stimNumber+1," (blank)")  #display stim
         else:
@@ -101,7 +103,7 @@ for trial in range(0,numTrials):
             gratingStim.ori = orientations[stimNumber]-90 # convert orientations to standard lab notation
             print("\tStim",stimNumber+1,orientations[stimNumber],' deg ',contrasts[stimNumber],' %')  #display stim
         
-        clock.reset
+        clock.reset()
         ser.setRTS(True) #stimulus trigger ON
         while clock.getTime() < stimDur:
             gratingStim.setPhase(0 + clock.getTime()*temporalFreq)

@@ -29,6 +29,12 @@ stimarray = numpy.empty((0,2), int)
 #(0,0) is the center of the monitor
 #x goes along with the width and y goes along with the height
 
+#USB serial device to time stimulus onset - NOTE this also acts as a TRIGGER for acquistion 
+deviceName = "COM3"
+ser = serial.Serial(deviceName, 38400, timeout=1) #RTS: stimulus onset trigger     DTS: other
+ser.setRTS(False)
+ser.setDTR(False)
+
 ####log#####
 fileAddress, fileName = logFunction.logFileNameGenerator(stimarray)
 print(fileAddress + fileName)
@@ -79,9 +85,13 @@ for n in range(0, num):
     else : 
         noiseStim.color = str(color)
         noiseStim.pos = (stiX, stiY)
+        
+    ser.setRTS(True) #stimulus trigger ON
     
     for i in range(0, int(flickTime) * 75):
         myWin.flip()
+        
+    ser.setRTS(False) #stimulus trigger OFF
     
     isWhite = not isWhite
     noiseStim.color = [0,0,0]
