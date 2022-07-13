@@ -4,7 +4,7 @@ import csv, pylab, math, random, numpy, time, imp, sys
 info={'stimType' :1}
 
 #----------- Window Config -----------#
-myWin = visual.Window(monitor='ACER', 
+myWin = visual.Window(monitor='Acer', 
     size=(1920,1080),
     fullscr=True,
     allowGUI = False,
@@ -196,7 +196,6 @@ while True: #continue until keypress
     mouse_dX,mouse_dY = myMouse.getRel()
     mouse1, mouse2, mouse3 = myMouse.getPressed()
     if (mouse3):
-        stim.setSize(mouse_dX, '+',1)
         stim.setPos([mouse_dX, mouse_dY], '+', 20)
     wheel_dX, wheel_dY = myMouse.getWheelRel()
     stim.setOri(wheel_dY*5, '+')

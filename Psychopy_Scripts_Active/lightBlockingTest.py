@@ -2,7 +2,7 @@
 from psychopy import visual, core, event, misc, logging, gui, monitors
 import csv, pylab, math, random, numpy, time, imp, sys
 
-mon = monitors.Monitor('ACER')
+mon = monitors.Monitor('Acer')
 myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 0)
 
 contrastCounter=0

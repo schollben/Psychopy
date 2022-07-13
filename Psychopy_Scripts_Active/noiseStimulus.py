@@ -10,7 +10,7 @@ import logFunction
 from logFunction import logFileNameGenerator, logScript
 
 ######setup#####
-mon = monitors.Monitor('ACER')
+mon = monitors.Monitor('Acer')
 myWin = visual.Window([1920,1080], monitor=mon, units="pix", screen = 1, color = [0,0,0])
 myMouse = event.Mouse(win=myWin)
 

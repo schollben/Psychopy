@@ -10,18 +10,18 @@ import logFunction
 from logFunction import logFileNameGenerator, logScript
 
 ######setup#####
-mon = monitors.Monitor('ACER')
+mon = monitors.Monitor('Acer')
 myWin = visual.Window([1920,1080], monitor=mon, units="pix", screen = 1, color = [0,0,0])
-monRefreshRate = 75 #refersh rate of mon in Hz
+monRefreshRate = 60 #refersh rate of mon in Hz
 
 # Stimulus properties
 width  = 1920 #currently following the monitor size of ACER
 height = 1080
 grid = 240 # set the width of each grid(ideal if set it as a  common divisor of both width and height)
-subGridNum = 12 #number of subGrid on one side when flickering
-num = 4 #number of stimulus
+subGridNum = 2 #number of subGrid on one side when flickering
+num = 2 #number of stimulus
 delay = 1 #delay time in seconds when flickering, cannot be smaller than 0.014 sec)
-duration = 3 #duration time in seconds on monitor
+duration = 2 #duration time in seconds on monitor
 isSpike = True #wheter the TTL will be displayed in vertical spike or not
 
 ######initialize#####
@@ -119,8 +119,10 @@ for n in range(0, num):
     colorSubgrid(stiX, stiY, grid, subGridNum, noise_matrix)
     noise_matrix = noise_matrix.reshape((height, width))
     
-    # Use numpy array as ImageStim
+    # Use numpy array as ImageStim - MOVE THIS OUT OF PRESENTATION LOOP
+    # noiseStim.setImage(XX)    
     noiseStim = visual.ImageStim(myWin, image = noise_matrix, size = (width, height))
+    
     if isSpike:
         ser.setRTS(True) #stimulus trigger ON
         ser.setRTS(False) #stimulus trigger OFF

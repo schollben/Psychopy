@@ -12,19 +12,19 @@ from logFunction import logFileNameGenerator, logScript
 ######setup#####
 numOrientations = 2
 orientations = numpy.arange(0,360,360.0/numOrientations)
-contrasts  = [8,64] #[4,8,16,32,64]
+contrasts  = [4,8,16,32,64]
 numContrasts = len(contrasts)
-isRandom = 1
+isRandom = 0
 numTrials= 1 #Run all the stims this many times
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
 stimDur = 2
 isi = 1
 
 #grating parameters
-temporalFreq = 8
-spatialFreq = 0.5
+temporalFreq = 4
+spatialFreq = 0.1
 textureType = 'sqr' #options: 'sqr' = square wave, 'sin' = sinusoidal
-stimSize = 10 #deg
+stimSize = 200 #deg
 
 ######initialize#####
 #USB serial device to time stimulus onset - NOTE this also acts as a TRIGGER for acquistion 
@@ -33,14 +33,10 @@ ser = serial.Serial(deviceName, 38400, timeout=1) #RTS: stimulus onset trigger  
 ser.setRTS(False)
 ser.setDTR(False)
 
-mon = monitors.Monitor('testMonitor')
-thisGamma = 1.6
+mon = monitors.Monitor('Acer') # mon.setGamma(1.6)?
 myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
-mon.setGamma(thisGamma)
 
-#myWin.gamma = 1.6 #human calibrated with gammaMotionNull - only works in duplication display mode?????
-#myWin.gamma = [thisGamma, thisGamma, thisGamma]
-
+myWin.gamma = 1.6 #human calibrated with gammaMotionNull - only works in duplication display mode?????
 
 #logging
 stimarray = numpy.empty((0,3), int) #[stimulus number, orientation, contrast]

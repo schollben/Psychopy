@@ -10,23 +10,21 @@ import logFunction
 from logFunction import logFileNameGenerator, logScript
 
 ######setup#####
-mon = monitors.Monitor('ACER')
+mon = monitors.Monitor('Acer')
 myWin = visual.Window([1920,1080], monitor=mon, units="pix", screen = 1, color = [0,0,0])
-monRefreshRate = 75 #refersh rate of mon in Hz
 
 # Stimulus properties
 width  = 1920 #currently following the monitor size of ACER
 height = 1080
 grid = 120 # set the width of each grid(ideal if set it as a  common divisor of both width and height)
 delay = 1 #delay time in seconds when flickering, cannot be smaller than 0.014 sec)
-duration = 2 #duration time in seconds on monitor
+duration = 0.25 #duration time in seconds on monitor
 isSpike = True #wheter the TTL will be displayed in vertical spike or not
-num = 4 # number of stimulus
+num = 10 # number of stimulus
 startSeed = 1 # seed number to start
 
 ######initialize#####
 noise_matrix = 0 * numpy.ones((height, width))
-flickTime = delay * monRefreshRate # delay time flickTime * 1/Refresh rate(HZ) of monitor
 #(0,0) is the bottom left corner of the monitor
 #x goes along the height of the grid and y goes along the width of the grid
 
@@ -35,6 +33,10 @@ deviceName = "COM3"
 ser = serial.Serial(deviceName, 38400, timeout=1) #RTS: stimulus onset trigger     DTS: other
 ser.setRTS(False)
 ser.setDTR(False)
+
+#get frame rate and calculate number of frames per stimulus
+monRefreshRate = 60 #refersh rate of mon in Hz
+numFrames = numpy.round(int(duration) * monRefreshRate)
 
 ####log#####
 stimarray = noise_matrix
@@ -83,7 +85,7 @@ for n in range(0, num):
     else :
         ser.setRTS(True) #stimulus trigger ON
 
-    for i in range(0, int(duration) * monRefreshRate):
+    for i in range(0, numFrames):
         myWin.flip()
     
     ser.setRTS(False) #stimulus trigger OFF
