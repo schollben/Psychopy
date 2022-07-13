@@ -10,7 +10,7 @@ import serial
 deviceName = "COM3"
 ser = serial.Serial(deviceName, 38400, timeout=1)
 
-win = psychopy.visual.Window([1920,1080],monitor="ACER", units="pix",screen = 1)
+win = psychopy.visual.Window([1920,1080],monitor="Acer", units="pix",screen = 1)
 
 line1 = psychopy.visual.Line(win=win, units="pix", lineColor=[-1, -1, -1], lineWidth = 100)
 line1.start = [-960, -540]

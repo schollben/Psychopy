@@ -4,7 +4,7 @@ from pathlib import Path
 print(Path(__file__).name)
 
 #create a window
-mywin = visual.Window([1920,1080],monitor="ACER", units="deg",screen = 1)
+mywin = visual.Window([1920,1080],monitor="Acer", units="deg",screen = 1)
 
 frame_rate = mywin.getActualFrameRate(nIdentical=60, nMaxFrames=100,nWarmUpFrames=10, threshold=10)
 print(frame_rate)
