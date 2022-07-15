@@ -24,7 +24,7 @@ numStim = 5 #number of stimulus
 interFlickerDelay = 0.1 #delay time in seconds when flickering, cannot be smaller than 0.014 sec)
 duration = 0.5 #duration time of each stimulus in seconds on monitor
 isSpike = True #wheter the TTL will be displayed in vertical spike or not
-startSeed = 1000 #seed number to start from
+startSeed = 1 #seed number to start from
 #(0,0) is the bottom left corner of the monitor
 #x goes along the height of the grid and y goes along the width of the grid
 
@@ -101,51 +101,59 @@ def colorSubgrid(x, y, grid, subGridNum, mat):
                             for b in range(int(y + (j-1)*sg), int(y+ j * sg)):
                                 mat[a,b] = -1
 
-#Randomly set the location of bottom left corner of the grid
-def setXY(width, height, grid, matrix, seed):
-    maxX = (numpy.floor(height / grid) - 1) * grid
-    maxY = (numpy.floor(width / grid) - 1) * grid
-    x = -1
-    y = -1
+#Generate all possible configuration
+def getConfigArr(checkerNum, leng) :
+    configArr = numpy.zeros((1000, int(leng)), dtype = int)
+    seed = 1
     ifValid = False
-    while (not ifValid) : 
+    for i in range(0,1000):
         random.seed(seed)
-        randomX = random.random()
-        randomY = random.random()
-        yInGrid = (randomX * width / grid)
-        xInGrid = (randomY * height / grid)
-        y = (yInGrid - yInGrid % 1) * grid
-        x = (xInGrid  - xInGrid  % 1) * grid
-        ifValid = ((x <= maxX) and (y <= maxY) and (x >= 0) and (y >= 0))
-        if (not (matrix[int(x), int(y)] == 0)) :
-            ifValid = False
-        seed = seed + 1
-    return x, y
-
-#Generate sequence of location for checkerboard 
-#    -> index 0 starts from top right corner and increments towards right direction
-def generateLog(x, y, gridSize, width, arr) :
-    col = width / gridSize
-    #row = height / gridSize
-    ind = (x/grid) * col + (y/grid)
-    arr[int(ind)] = 1
-    return arr
+        for j in range(checkerNum):
+            while not ifValid :
+                r = random.random() * int(leng)
+                r = (r - r % 1)
+                if configArr[i, int(r)] == 0 :
+                    configArr[i, int(r)] = 1
+                    break
+                else :
+                    ifValid = False
+        seed = seed + checkerNum
+    return configArr
     
-def getConfigArr (width, height, gridSize, subGridNum, checkerNum, seed) :
-    return 0
-
+#Decode the binary sequence back to coordinate
+def decode(config_str, width, gridSize, checkerNum) :
+    checkerArr = numpy.zeros((int(checkerNum), 2))
+    ind = 0
+    col = width / gridSize
+    for i in range(0, len(config_str)) :
+        if (config_str[i] >= '1') :
+            y = (i % col)
+            x = (i - y) * grid / col
+            y = y * grid
+            checkerArr[ind, 0] = x 
+            checkerArr[ind, 1] = y 
+            ind = ind + 1
+    
+    return checkerArr
 
 ####run#####
+configArr = getConfigArr(numBoard, int(logArrLen))
+
 for na in range(0, numStim):
     os.chdir(fileAddress)
+    config = configArr[na, 0]
+    for index in range(1, int(logArrLen)) :
+        config = str(config) + str(configArr[na, index])
+    locArr = decode(str(config), width, grid, numBoard)
+    
     for n in range(0, numBoard):
-        stiX, stiY = setXY(width, height, grid, noise_matrix, startSeed)    # Setting location for one subgrid
+        # Setting location for one subgrid
+        stiX = locArr[n, 0]    
+        stiY = locArr[n, 1]
         print('Grid '+ str(n) + ' : ' + str(stiX)+ ' high and ' + str(stiY) +  
         ' right from the bottom right corner')
-        startSeed = startSeed + 1
-        colorSubgrid(stiX, stiY, grid, subGridNum, noise_matrix)
+        colorSubgrid(int(stiX), int(stiY), grid, subGridNum, noise_matrix)
         noise_matrix = noise_matrix.reshape((height, width))
-        logArray = generateLog(stiX, stiY, grid, width, logArray)
         
         noiseStim.setImage(noise_matrix)
         
@@ -154,11 +162,12 @@ for na in range(0, numStim):
             ser.setRTS(False) #stimulus trigger OFF
         else :
             ser.setRTS(True) #stimulus trigger ON
+
+    print('subgrid size : ' + str(subGrid) + ' , grid size : ' + str(grid))
     
     #Logging
     file = open(fileName, "a")
-    for i in range(0, int(logArrLen)) :
-        file.write(str(logArray[i]))
+    file.write(str(config))
     file.write('\n')
     file.close()
 
@@ -183,7 +192,5 @@ for na in range(0, numStim):
     noise_matrix = 0 * numpy.ones((height, width))
     logArray = numpy.zeros((int(logArrLen),), dtype=int)
 
-
 #print file name and address
-print('subgrid size : ' + str(subGrid) + ' , grid size : ' + str(grid))
 print(fileAddress + fileName)
