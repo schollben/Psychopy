@@ -18,10 +18,11 @@ monRefreshRate = myWin.getActualFrameRate(nIdentical=60, nMaxFrames=100,nWarmUpF
 width  = 1920 #currently following the monitor size of ACER
 height = 1080
 grid = 120 # set the width of each grid(ideal if set it as a  common divisor of both width and height)
-duration = 0.25 #duration time in seconds on monitor, cannot be smaller than 0.014 sec)
+duration = 1 #duration time in seconds on monitor, cannot be smaller than 0.014 sec
 isSpike = True #wheter the TTL will be displayed in vertical spike or not
 num = 10 # number of stimulus
 startSeed = 1 # seed number to start
+sparseness = 0.9 #in scale from 0 to 1
 
 ######initialize#####
 noise_matrix = 0 * numpy.ones((height, width))
@@ -46,37 +47,40 @@ fileAddress, fileName = logFunction.logFileNameGeneratorAlt()
 #logging the whole script
 logScript(os.getcwd(),os.path.basename(__file__), fileAddress, fileName)
 
-#Functions
+#Functions    
 #color the subgrid in black and white    
-def colorBoard(grid, mat, width, height, seed, log) :
+def colorBoard(grid, mat, width, height, seed, log, sp) :
     random.seed(seed)
     col = width / grid
+    lowerBound = (1-sp)/2
+    upperBound = 1-((1-sp)/2)
     x = int(height/grid)
     y = int(width/grid)
     for i in range(0,x) :
         for j in range(0,y):
             r = random.random()
-            if r >= 0.5 :
+            if r <= lowerBound :
                 for a in range(0, grid):
                     for b in range (0, grid):
                         mat[i * grid + a, j * grid + b] = 1
                 log[int(i*col+j)] = 1
-            else :
+            elif r >= upperBound:
                 for a in range(0, grid):
                     for b in range (0, grid):
                         mat[i * grid + a, j * grid + b] = -1
                 log[int(i*col+j)] = -1
+            else :
+                log[int(i*col+j)] = 0
     return mat, log
 
 ####run#####
 noiseStim.setAutoDraw(True)
 
 for n in range(0, num):
-    m, l = colorBoard(grid, noise_matrix, width, height, startSeed, logArray)
+    m, l = colorBoard(grid, noise_matrix, width, height, startSeed, logArray, sparseness)
     startSeed = startSeed + 1
     noist_matrix = m
     logArray = l;
-    #print(numpy.array2string(m))
     
     noise_matrix = noise_matrix.reshape((height, width))
     noiseStim.setImage(noise_matrix)
@@ -104,7 +108,6 @@ for n in range(0, num):
         
     ser.setRTS(False) #stimulus trigger OFF
     noise_matrix = 0 * numpy.ones((height, width))
-    
     
 #print file name and address
 print('grid size : ' + str(grid))
