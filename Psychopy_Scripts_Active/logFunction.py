@@ -20,7 +20,22 @@ def logFileNameGenerator(stimarray):
     while os.path.exists(logFilePath+FileName):
         i = i+1
         FileName = "T" + f"{i:03}"+'.txt'
-    numpy.savetxt(logFilePath+FileName,stimarray)
+    numpy.savetxt(logFilePath+FileName,stimarray,fmt="%1d")
+    return logFilePath, FileName
+    
+def logFileNameGeneratorAlt():
+    dataPath='D:\\Pyschopy\\'
+    date = (time.strftime("%Y-%m-%d"))
+    directory = dataPath+date
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+    logFilePath =dataPath+date+'\\'
+    i = 1
+    FileName = "T"+ f"{i:03}"+'.txt'
+    while os.path.exists(logFilePath+FileName):
+        i = i+1
+        FileName = "T" + f"{i:03}"+'.txt'
+    open(str(logFilePath+FileName), 'x')
     return logFilePath, FileName
     
 def logScript(currentAddress,fileName, path, name):
@@ -28,6 +43,7 @@ def logScript(currentAddress,fileName, path, name):
     f = open(str(name + "_script.txt"), 'x')
     f = open(str(name + "_script.txt"), 'w')
     os.chdir(str(currentAddress))
+    print(str(currentAddress))
     rfi = open(str(fileName), 'r')
     while True:
         l = rfi.readline()
