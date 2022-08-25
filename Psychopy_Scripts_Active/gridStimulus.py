@@ -126,7 +126,6 @@ def setXY(width, height, grid, matrix, seed):
 #    -> index 0 starts from top right corner and increments towards right direction
 def generateLog(x, y, gridSize, width, arr) :
     col = width / gridSize
-    #row = height / gridSize
     ind = (x/grid) * col + (y/grid)
     arr[int(ind)] = 1
     return arr
