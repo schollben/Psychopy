@@ -22,7 +22,7 @@ grid = 2*96 # set the width of each grid
 subGridNum = 2 #number of subGrid on one side when flickering
 numBoard = 4 #number of checkers
 numStim = 1000 #number of stimulus
-interFlickerDelay = 0.25 #delay time in seconds when flickering, cannot be smaller than 0.014 sec)
+interFlickerDelay = 0.10 #delay time in seconds when flickering, cannot be smaller than 0.014 sec)
 duration = 1 #duration time of each stimulus in seconds on monitor
 isSpike = False #wheter the TTL will be displayed in vertical spike or not
 ###
@@ -40,7 +40,7 @@ noiseStim = visual.ImageStim(myWin, image = noise_matrix, size = (width, height)
 noiseStim.setAutoDraw(True)
 
 #USB serial device to time stimulus onset - NOTE this also acts as a TRIGGER for acquistion 
-deviceName = "COM4"
+deviceName = "COM3"
 ser = serial.Serial(deviceName, 38400, timeout=1) #RTS: stimulus onset trigger     DTS: other
 ser.setRTS(False)
 ser.setDTR(False)
@@ -149,6 +149,11 @@ for num in range(0, numStim):
 
 clock = core.Clock();
 
+#baseline
+clock.reset();
+while clock.getTime() < 5:
+    myWin.flip()
+    
 for num in range(0, numStim):
     
     
@@ -187,7 +192,8 @@ for num in range(0, numStim):
             myWin.flip()
     noiseStim.contrast = 0
     myWin.flip()
-
+    myWin.flip()
+    
     ser.setRTS(False) #stimulus trigger OFF
     
     noise_matrix = 0 * numpy.ones((height, width))

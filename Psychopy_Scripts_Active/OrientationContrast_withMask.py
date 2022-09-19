@@ -12,17 +12,18 @@ from logFunction import logFileNameGenerator, logScript
 ######setup#####
 numOrientations = 8
 orientations = numpy.arange(0,360,360.0/numOrientations)
-contrasts  = [4,8,16,32,64]
-numContrasts = len(contrasts)
-isRandom = 1
+masks = [0,10,20,40,80] #radius in deg
+contrasts  = [16,64] #[4,8,16,32,64]
+
+isRandom = 0
 numTrials= 1 #Run all the stims this many times
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
-stimDur = 2
-isi = 1
+stimDur = .2
+isi = .1
 
 #grating parameters
 temporalFreq = 4
-spatialFreq = 0.06
+spatialFreq = 0.1
 textureType = 'sqr' #options: 'sqr' = square wave, 'sin' = sinusoidal
 stimSize = 250 #deg
 
@@ -34,12 +35,12 @@ ser.setRTS(False)
 ser.setDTR(False)
 
 mon = monitors.Monitor('Acer') # mon.setGamma(1.6)?
-myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 1)
+myWin = visual.Window([1920,1080],monitor=mon, units="deg",screen = 0)
 
 myWin.gamma = 1.6 #human calibrated with gammaMotionNull - only works in duplication display mode?????
 
 #logging
-stimarray = numpy.empty((0,3), int) #[stimulus number, orientation, contrast]
+stimarray = numpy.empty((0,4), int) #[stimulus number, orientation, contrast, mask size]
 fileAddress, fileName = logFunction.logFileNameGenerator(stimarray)
 print(fileAddress + fileName)
 
@@ -51,12 +52,16 @@ gratingStim = visual.GratingStim(win=myWin, mask='circle', tex=textureType ,unit
     pos=[0, 0],size=stimSize, sf=spatialFreq, autoLog=False)
 gratingStim.setAutoDraw(True)
 
-#grayStim = visual.GratingStim(win=myWin,units='deg',
-#    pos=[0, 0],size=[134,134], contrast=0, autoLog=False)
-#grayStim.setAutoDraw(True)
+#create mask
+maskStim = visual.Circle(win=myWin, units='deg',pos=[0,0])
+maskStim.setContrast(0);
+maskStim.setAutoDraw(True)
+maskStim.size = 5
 
 #create stimulus combinations and order
-totalNumStim = len(orientations)*len(contrasts)+doBlank
+numContrasts = len(contrasts)
+numMasks = len(masks)
+totalNumStim = numOrientations*numContrasts*numMasks+doBlank
 stimOrder = numpy.arange(0,totalNumStim)
 
 if isRandom:
@@ -65,8 +70,10 @@ if doBlank:
     stimOrder.append(blankID)
     totalNumStim = totalNumStim + 1
 #repeat parameters for combinations
-contrasts = numpy.repeat(contrasts,numOrientations,axis=0)
-orientations = numpy.tile(orientations,numContrasts)
+contrasts = numpy.repeat(contrasts,numOrientations*numMasks,axis=0)
+masks = numpy.repeat(masks,numOrientations,axis=0)
+masks = numpy.tile(masks,numContrasts)
+orientations = numpy.tile(orientations,numContrasts*numMasks)
 
 ####run#####
 
@@ -95,10 +102,11 @@ for trial in range(0,numTrials):
             gratingStim.setContrast(0)
             print("\tStim",stimNumber+1," (blank)")  #display stim
         else:
+            maskStim.size = masks[stimNumber]
             gratingStim.setContrast( contrasts[stimNumber] / 100 )
             gratingStim.ori = orientations[stimNumber]-90 # convert orientations to standard lab notation
-            print("\tStim",stimNumber+1,orientations[stimNumber],' deg ',contrasts[stimNumber],' %')  #display stim
-        
+            print("\tStim",stimNumber+1,orientations[stimNumber],' deg ',contrasts[stimNumber],' %',masks[stimNumber],' deg')  #display stim
+                
         clock.reset()
         ser.setRTS(True) #stimulus trigger ON
         while clock.getTime() < stimDur:
@@ -107,7 +115,7 @@ for trial in range(0,numTrials):
         ser.setRTS(False) #stimulus trigger OFF
         
         #logging
-        stimarray = numpy.append( stimarray, numpy.array([[stimNumber+1, orientations[stimNumber], contrasts[stimNumber]]]), axis=0)
+        stimarray = numpy.append( stimarray, numpy.array([[stimNumber+1, orientations[stimNumber], contrasts[stimNumber], masks[stimNumber]]]), axis=0)
         numpy.savetxt(fileAddress+fileName,stimarray,fmt="%4d") #updating and overwting file
         
         #now do ISI

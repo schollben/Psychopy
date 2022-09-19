@@ -12,19 +12,19 @@ from logFunction import logFileNameGenerator, logScript
 ######setup#####
 numOrientations = 8
 orientations = numpy.arange(0,360,360.0/numOrientations)
-contrasts  = [4,8,16,32,64]
+contrasts  = [100]
 numContrasts = len(contrasts)
 isRandom = 1
-numTrials= 1 #Run all the stims this many times
+numTrials= 7 #Run all the stims this many times
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
 stimDur = 2
 isi = 1
 
 #grating parameters
 temporalFreq = 4
-spatialFreq = 0.06
+spatialFreq = 0.1
 textureType = 'sqr' #options: 'sqr' = square wave, 'sin' = sinusoidal
-stimSize = 250 #deg
+stimSize = 40 #deg
 
 ######initialize#####
 #USB serial device to time stimulus onset - NOTE this also acts as a TRIGGER for acquistion 
@@ -47,7 +47,7 @@ print(fileAddress + fileName)
 logScript(os.getcwd(),os.path.basename(__file__), fileAddress, fileName)
 
 #create grating stims
-gratingStim = visual.GratingStim(win=myWin, mask='circle', tex=textureType ,units='deg',
+gratingStim = visual.GratingStim(win=myWin, mask=annulus, tex=textureType ,units='deg',
     pos=[0, 0],size=stimSize, sf=spatialFreq, autoLog=False)
 gratingStim.setAutoDraw(True)
 
