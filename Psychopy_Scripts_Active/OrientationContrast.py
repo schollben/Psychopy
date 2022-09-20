@@ -51,10 +51,6 @@ gratingStim = visual.GratingStim(win=myWin, mask='circle', tex=textureType ,unit
     pos=[0, 0],size=stimSize, sf=spatialFreq, autoLog=False)
 gratingStim.setAutoDraw(True)
 
-#grayStim = visual.GratingStim(win=myWin,units='deg',
-#    pos=[0, 0],size=[134,134], contrast=0, autoLog=False)
-#grayStim.setAutoDraw(True)
-
 #create stimulus combinations and order
 totalNumStim = len(orientations)*len(contrasts)+doBlank
 stimOrder = numpy.arange(0,totalNumStim)
@@ -78,7 +74,7 @@ gratingStim.setContrast(0)
 #delay and trigger to start imaging acquisition
 clock = core.Clock();
 clock.reset()
-while clock.getTime() < 5:
+while clock.getTime() < 2:
     myWin.flip()
 
 
