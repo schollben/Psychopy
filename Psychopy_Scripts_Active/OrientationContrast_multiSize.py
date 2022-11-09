@@ -13,17 +13,17 @@ from logFunction import logFileNameGenerator, logScript
 numOrientations = 4
 orientations = numpy.arange(0,360,360.0/numOrientations)
 gratsizes = [10,20,40,80,160] #radius in deg
-contrasts  = [16,64] #[4,8,16,32,64]
+contrasts  = [16,64]
 
-isRandom = 0
-numTrials= 1 #Run all the stims this many times
+isRandom = 1
+numTrials= 8 #Run all the stims this many times
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
-stimDur = .2
-isi = .1
+stimDur = 2
+isi = 0.5
 
 #grating parameters
 temporalFreq = 4
-spatialFreq = 0.1
+spatialFreq = 0.08
 textureType = 'sqr' #options: 'sqr' = square wave, 'sin' = sinusoidal
 stimSize = 250 #deg
 
@@ -92,6 +92,8 @@ while clock.getTime() < 5:
 #stimulus presentation
 for trial in range(0,numTrials): 
     
+    if isRandom:
+        random.shuffle(stimOrder)
     print("Beginning Trial",trial+1)
     
     for stimNumber in stimOrder:

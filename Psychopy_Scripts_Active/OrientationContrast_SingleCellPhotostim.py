@@ -11,15 +11,15 @@ from logFunction import logFileNameGenerator, logScript
 
 
 ######setup#####
-numCells = 2 #always include 2 cells with the first ROI being a SHAM location?
-numTrials= 1
+numCells = 11 #always include 2 cells with the first ROI being a SHAM location?
+numTrials= 20
 
 numOrientations = 4
 orientations = numpy.arange(0,360,360.0/numOrientations)
 contrasts  = [16,64]
 numContrasts = len(contrasts)
 isRandom = 1
-##### ASSUMING 120Hz frame rate!
+##### ASSUMING 60Hz frame rate!
 
 #grating parameters
 temporalFreq = 4
@@ -90,7 +90,7 @@ for trial in range(0,numTrials):
             stimNumber = stimOrder[ncell,k]
             
             gratingStim.setContrast(0)
-            for frmn in range(0, 60):
+            for frmn in range(0, 30):
                 myWin.flip()
                 
             gratingStim.setContrast( contrasts[stimNumber] / 100 )
@@ -99,7 +99,7 @@ for trial in range(0,numTrials):
             
                 
             ser.setRTS(True) #stimulus trigger ON
-            for frmn in range(0, 120): #frame rate = 120 Hz
+            for frmn in range(0, 60): #frame rate = 60 Hz
                 gratingStim.setPhase(0.05, '+')
                 myWin.flip()
                 if frmn == 12:

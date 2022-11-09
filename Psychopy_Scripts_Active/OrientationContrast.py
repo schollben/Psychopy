@@ -15,14 +15,14 @@ orientations = numpy.arange(0,360,360.0/numOrientations)
 contrasts  = [4,8,16,32,64]
 numContrasts = len(contrasts)
 isRandom = 1
-numTrials= 1 #Run all the stims this many times
+numTrials= 2 #Run all the stims this many times
 doBlank = 0 #0 for no blank stim, 1 to have a blank stim. The blank will have the highest stimcode.
-stimDur = 2
-isi = 1
+stimDur = .1
+isi = 0.05
 
 #grating parameters
 temporalFreq = 4
-spatialFreq = 0.06
+spatialFreq = 0.08
 textureType = 'sqr' #options: 'sqr' = square wave, 'sin' = sinusoidal
 stimSize = 250 #deg
 
@@ -55,8 +55,6 @@ gratingStim.setAutoDraw(True)
 totalNumStim = len(orientations)*len(contrasts)+doBlank
 stimOrder = numpy.arange(0,totalNumStim)
 
-if isRandom:
-    random.shuffle(stimOrder)
 if doBlank:
     stimOrder.append(blankID)
     totalNumStim = totalNumStim + 1
@@ -74,12 +72,15 @@ gratingStim.setContrast(0)
 #delay and trigger to start imaging acquisition
 clock = core.Clock();
 clock.reset()
-while clock.getTime() < 2:
+while clock.getTime() < 5:
     myWin.flip()
 
 
 #stimulus presentation
 for trial in range(0,numTrials): 
+    
+    if isRandom:
+        random.shuffle(stimOrder)
     
     print("Beginning Trial",trial+1)
     

@@ -8,7 +8,7 @@ import serial
 from pathlib import Path
 import logFunction
 from logFunction import logFileNameGeneratorAlt, logScript
-
+ 
 ######setup#####
 mon = monitors.Monitor('Acer')
 myWin = visual.Window([1920,1080], monitor=mon, units="pix", screen = 0, color = [0,0,0])
